@@ -1,0 +1,23 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: campusshare-db
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: campusshare
+      MYSQL_USER: campus
+      MYSQL_PASSWORD: campus_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - campusshare_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  campusshare_data:
