@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { GraduationCap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { Button, Card, Input } from '../components/ui'
 import { errorMessage } from '../utils/format'
@@ -27,7 +26,7 @@ export default function Login() {
     <div className="mx-auto max-w-md">
       <Card>
         <div className="mb-6 text-center">
-          <GraduationCap className="mx-auto h-10 w-10 text-brand-600" />
+          <img src="/logo.svg" alt="CampusShare" className="mx-auto h-14 w-14" />
           <h1 className="mt-2 text-2xl font-bold">Connexion</h1>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>

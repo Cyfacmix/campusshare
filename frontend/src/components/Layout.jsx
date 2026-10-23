@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Bell, GraduationCap, LogOut, Menu, Moon, Sun, X } from 'lucide-react'
+import { Bell, LogOut, Menu, Moon, Sun, X } from 'lucide-react'
 import { gamification } from '../api'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../hooks/useTheme'
@@ -41,7 +41,7 @@ export default function Layout() {
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
           <Link to="/" className="flex items-center gap-2 text-lg font-bold text-brand-700 dark:text-brand-300">
-            <GraduationCap className="h-7 w-7" /> CampusShare
+            <img src="/logo.svg" alt="CampusShare" className="h-8 w-8" /> CampusShare
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Navigation principale">{links}</nav>

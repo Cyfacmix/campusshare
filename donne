@@ -1,2 +1,6 @@
 mdp : Campus2026!
 Comptes : admin@campus.mg | moderateur@campus.mg | prof.informatique@campus.mg | etudiant1@campus.mg
+
+git add .
+git commit -m "Message clair"
+git push
