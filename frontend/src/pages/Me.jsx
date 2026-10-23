@@ -44,11 +44,11 @@ function ProfileForm() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <Select label="Filière" {...register('filiere')}>
-            <option value="">—</option>
+            <option value="">-- Choisir --</option>
             {filieres.data?.map((f) => <option key={f.id} value={f.id}>{f.nom}</option>)}
           </Select>
           <Select label="Niveau" {...register('niveau')}>
-            <option value="">—</option>
+            <option value="">-- Choisir --</option>
             {NIVEAUX.map((n) => <option key={n}>{n}</option>)}
           </Select>
         </div>

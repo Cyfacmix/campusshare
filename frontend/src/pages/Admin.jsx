@@ -167,7 +167,7 @@ function Matieres() {
           <Select label="Niveau" value={form.niveau} onChange={set('niveau')}>{NIVEAUX.map((n) => <option key={n}>{n}</option>)}</Select>
           <Select label="Semestre" value={form.semestre} onChange={set('semestre')}>{[1, 2].map((n) => <option key={n}>{n}</option>)}</Select>
           <Select label="Filière" value={form.filiere} onChange={set('filiere')}>
-            <option value="">—</option>{filieres.data?.map((f) => <option key={f.id} value={f.id}>{f.nom}</option>)}
+            <option value="">-- Choisir --</option>{filieres.data?.map((f) => <option key={f.id} value={f.id}>{f.nom}</option>)}
           </Select>
         </div>
         <div className="mt-3 flex justify-end"><Button disabled={!valid} loading={create.isPending} onClick={() => create.mutate()}>Ajouter la matière</Button></div>
