@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+from rest_framework.exceptions import PermissionDenied
 User = get_user_model()
 
 
@@ -98,6 +98,12 @@ class LoginSerializer(TokenObtainPairSerializer):
     """Ajoute le profil utilisateur a la reponse de connexion."""
 
     def validate(self, attrs):
+        email = attrs.get(self.username_field)
+        password = attrs.get("password")
+        user = User.objects.filter(email__iexact=email).first()
+        # Compte desactive : message explicite, mais seulement si le mot de passe est correct
+        if user and not user.is_active and user.check_password(password):
+            raise PermissionDenied("Votre compte a été désactivé par l'administrateur.")
         data = super().validate(attrs)
         data["user"] = UserSerializer(self.user, context=self.context).data
         return data
