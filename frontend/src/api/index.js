@@ -87,4 +87,5 @@ export const dashboard = {
 export const adminUsers = {
   list: (params) => get('/admin/users/', params),
   update: (id, d) => patch(`/admin/users/${id}/`, d),
+  remove: (id) => del(`/admin/users/${id}/`),
 }

@@ -91,8 +91,7 @@ class AdminUserSerializer(serializers.ModelSerializer):
             "id", "email", "first_name", "last_name", "role", "is_active",
             "points_reputation", "date_joined",
         ]
-        read_only_fields = ["id", "email", "first_name", "last_name",
-                            "points_reputation", "date_joined"]
+        read_only_fields = ["id", "email", "points_reputation", "date_joined"]
 
 
 class LoginSerializer(TokenObtainPairSerializer):

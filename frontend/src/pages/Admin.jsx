@@ -227,11 +227,23 @@ function UsersAdmin() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [role, setRole] = useState('')
+  const [editing, setEditing] = useState(null)
+  const [deleting, setDeleting] = useState(null)
   const query = useQuery({ queryKey: ['admin-users', page, search, role], queryFn: () => adminUsers.list({ page, search, role }), placeholderData: (p) => p })
   const update = useMutation({
     mutationFn: ({ id, data }) => adminUsers.update(id, data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-users'] }); toast.success('Utilisateur mis à jour.') },
     onError: (e) => toast.error(errorMessage(e)),
+  })
+  const rename = useMutation({
+    mutationFn: () => adminUsers.update(editing.id, { first_name: editing.first_name, last_name: editing.last_name }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-users'] }); setEditing(null); toast.success('Utilisateur modifié.') },
+    onError: (e) => toast.error(errorMessage(e)),
+  })
+  const remove = useMutation({
+    mutationFn: () => adminUsers.remove(deleting.id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-users'] }); setDeleting(null); toast.success('Utilisateur supprimé.') },
+    onError: (e) => { setDeleting(null); toast.error(errorMessage(e)) },
   })
   return (
     <div className="space-y-4">
@@ -247,7 +259,7 @@ function UsersAdmin() {
             <Card className="overflow-x-auto !p-0">
               <table className="w-full text-left text-sm">
                 <thead className="bg-slate-50 text-xs uppercase text-slate-500 dark:bg-slate-800"><tr>
-                  <th className="px-4 py-2">Utilisateur</th><th className="px-4 py-2">Rôle</th><th className="px-4 py-2">Points</th><th className="px-4 py-2">Actif</th>
+                  <th className="px-4 py-2">Utilisateur</th><th className="px-4 py-2">Rôle</th><th className="px-4 py-2">Points</th><th className="px-4 py-2">Actif</th><th className="px-4 py-2"></th>
                 </tr></thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {data.results.map((u) => (
@@ -265,6 +277,12 @@ function UsersAdmin() {
                         <input type="checkbox" aria-label={`Actif : ${u.email}`} checked={u.is_active} disabled={u.id === me.id}
                           onChange={(e) => update.mutate({ id: u.id, data: { is_active: e.target.checked } })} />
                       </td>
+                        <td className="px-4 py-2 text-right">
+                        <span className="flex justify-end gap-1">
+                          <Button variant="ghost" size="sm" aria-label={`Modifier ${u.email}`} onClick={() => setEditing({ ...u })}><Pencil className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="sm" aria-label={`Supprimer ${u.email}`} disabled={u.id === me.id} onClick={() => setDeleting(u)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                        </span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -274,6 +292,17 @@ function UsersAdmin() {
           </>
         )}
       </QueryState>
+        <Modal open={Boolean(editing)} onClose={() => setEditing(null)} title="Modifier l'utilisateur"
+        footer={(<><Button variant="secondary" onClick={() => setEditing(null)}>Annuler</Button><Button loading={rename.isPending} onClick={() => rename.mutate()}>Enregistrer</Button></>)}>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Input label="Prénom" value={editing?.first_name || ''} onChange={(e) => setEditing((x) => ({ ...x, first_name: e.target.value }))} />
+          <Input label="Nom" value={editing?.last_name || ''} onChange={(e) => setEditing((x) => ({ ...x, last_name: e.target.value }))} />
+          <Input className="sm:col-span-2" label="Email" value={editing?.email || ''} disabled />
+        </div>
+      </Modal>
+      <ConfirmDialog open={Boolean(deleting)} onClose={() => setDeleting(null)} loading={remove.isPending}
+        title="Supprimer l'utilisateur" message={`Supprimer définitivement le compte de ${deleting?.first_name} ${deleting?.last_name} (${deleting?.email}) ? Cette action est irréversible.`}
+        confirmLabel="Supprimer" onConfirm={() => remove.mutate()} />
     </div>
   )
 }

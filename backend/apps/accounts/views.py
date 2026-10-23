@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.exceptions import ValidationError
 
 from apps.gamification.services import check_badges
 from common.pagination import StandardPagination
@@ -80,11 +81,11 @@ class PublicUserView(generics.RetrieveAPIView):
     serializer_class = PublicUserSerializer
     permission_classes = [AllowAny]
 
-
 class AdminUserViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     queryset = User.objects.all().order_by("-date_joined")
@@ -93,4 +94,9 @@ class AdminUserViewSet(
     pagination_class = StandardPagination
     filterset_fields = ["role", "is_active"]
     search_fields = ["email", "first_name", "last_name"]
-    http_method_names = ["get", "patch", "head", "options"]
+    http_method_names = ["get", "patch", "delete", "head", "options"]
+
+    def perform_destroy(self, instance):
+        if instance.pk == self.request.user.pk:
+            raise ValidationError("Vous ne pouvez pas supprimer votre propre compte.")
+        instance.delete()
