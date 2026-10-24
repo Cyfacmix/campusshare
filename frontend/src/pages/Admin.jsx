@@ -182,9 +182,8 @@ function Matieres() {
           <Input className="sm:col-span-2" label="Nom" value={form.nom} onChange={set('nom')} />
           <Select label="Niveau" value={form.niveau} onChange={set('niveau')}>{NIVEAUX.map((n) => <option key={n}>{n}</option>)}</Select>
           <Select label="Semestre" value={form.semestre} onChange={set('semestre')}>{[1, 2].map((n) => <option key={n}>{n}</option>)}</Select>
-          <FiliereChecks className="sm:col-span-2" options={filieres.data}
-            value={editing?.filieres || []}
-            onChange={(v) => setEditing((x) => ({ ...x, filieres: v }))} />
+          <FiliereChecks className="sm:col-span-6" options={filieres.data}
+            value={form.filieres} onChange={(v) => setForm((f) => ({ ...f, filieres: v }))} />
         </div>
         <div className="mt-3 flex justify-end"><Button disabled={!valid} loading={create.isPending} onClick={() => create.mutate()}>Ajouter la matière</Button></div>
       </Card>
