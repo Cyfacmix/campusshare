@@ -38,10 +38,10 @@ CURRICULUM = {
 }
 
 BADGES = [
-    ("Débutant", "Bienvenue sur CampusShare !", "🌱", 0),
-    ("Contributeur", "Vous partagez régulièrement.", "📚", 50),
-    ("Expert", "Vos ressources sont très appréciées.", "🎓", 200),
-    ("Mentor", "Un pilier de la communauté.", "🏆", 500),
+    ("Débutant", "Bienvenue sur CampusShare !", "sprout", 0),
+    ("Contributeur", "Vous partagez régulièrement.", "book-open", 50),
+    ("Expert", "Vos ressources sont très appréciées.", "graduation-cap", 200),
+    ("Mentor", "Un pilier de la communauté.", "trophy", 500),
 ]
 
 TYPES = ["cours", "resume", "examen", "tutoriel"]

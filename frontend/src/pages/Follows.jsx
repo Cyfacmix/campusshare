@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { BellPlus } from 'lucide-react'
+import { BellPlus, Check, Plus } from 'lucide-react'
 import { catalog, follows } from '../api'
 import { Badge, Button, Card, EmptyState, PageHeader, QueryState } from '../components/ui'
 import { useToast } from '../context/Toast'
@@ -49,7 +49,7 @@ export default function Follows() {
                 <button key={m.id} onClick={() => toggle.mutate({ id: m.id, isFollowed: followedIds.has(m.id) })}
                   aria-pressed={followedIds.has(m.id)}>
                   <Badge color={followedIds.has(m.id) ? 'brand' : 'slate'} className="cursor-pointer !px-3 !py-1.5">
-                    {m.nom} · {m.niveau} {followedIds.has(m.id) ? '✓' : '+'}
+                    {m.nom} · {m.niveau} {followedIds.has(m.id) ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Plus className="h-3.5 w-3.5" aria-hidden="true" />}
                   </Badge>
                 </button>
               ))}

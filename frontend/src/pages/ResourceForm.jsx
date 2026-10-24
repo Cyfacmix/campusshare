@@ -82,7 +82,7 @@ function FormBody({ existing }) {
             {filieres.data?.map((f) => <option key={f.id} value={f.id}>{f.nom}</option>)}
           </Select>
           <Select label="Matière" error={errors.matiere?.message} {...register('matiere', { required: 'Choisissez une matière.' })}>
-            <option value="">— Choisir —</option>
+            <option value="">-- Choisir --</option>
             {options.map((m) => <option key={m.id} value={m.id}>{m.nom} ({m.niveau})</option>)}
           </Select>
         </div>

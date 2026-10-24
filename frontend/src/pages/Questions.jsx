@@ -32,7 +32,7 @@ function AskModal({ open, onClose, matieres }) {
         <Button loading={mutation.isPending} disabled={!valid} onClick={() => mutation.mutate()}>Publier</Button></>)}>
       <div className="space-y-4">
         <Select label="Matière" value={form.matiere} onChange={set('matiere')}>
-          <option value="">— Choisir —</option>
+          <option value="">-- Choisir --</option>
           {matieres?.map((m) => <option key={m.id} value={m.id}>{m.nom} ({m.niveau})</option>)}
         </Select>
         <Input label="Titre" value={form.titre} onChange={set('titre')} maxLength={200} />

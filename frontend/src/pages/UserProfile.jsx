@@ -5,6 +5,7 @@ import { auth, resources } from '../api'
 import ResourceCard from '../components/ResourceCard'
 import { Avatar, Badge, Card, EmptyState, QueryState } from '../components/ui'
 import { ROLES, fmtDate, fullName } from '../utils/format'
+import BadgeIcon from '../components/BadgeIcon'
 
 export default function UserProfile() {
   const { id } = useParams()
@@ -31,7 +32,7 @@ export default function UserProfile() {
               {u.bio && <p className="mt-3 text-sm">{u.bio}</p>}
               {u.badges.length > 0 && (
                 <div className="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start">
-                  {u.badges.map((b) => <Badge key={b.nom} color="green" title={b.description}>{b.icone} {b.nom}</Badge>)}
+                  {u.badges.map((b) => <Badge key={b.nom} color="green" title={b.description}><BadgeIcon name={b.icone} /> {b.nom}</Badge>)}
                 </div>
               )}
             </div>

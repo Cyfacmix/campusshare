@@ -5,6 +5,7 @@ import { Award, Download, Eye, FileText, MessageSquare, ThumbsUp } from 'lucide-
 import { dashboard, resources } from '../api'
 import ResourceCard from '../components/ResourceCard'
 import { Badge, Button, Card, EmptyState, PageHeader, QueryState, StatCard } from '../components/ui'
+import BadgeIcon from '../components/BadgeIcon'
 
 function MyResources() {
   const query = useQuery({ queryKey: ['resources', 'mine'], queryFn: () => resources.mine({ page_size: 24 }) })
@@ -59,7 +60,7 @@ export default function MyDashboard() {
                 <h2 className="mb-3 font-semibold">Badges</h2>
                 <div className="flex flex-wrap gap-2">
                   {d.badges.length === 0 && <p className="text-sm text-slate-500">Aucun badge pour l&apos;instant.</p>}
-                  {d.badges.map((b) => <Badge key={b.nom} color="green" title={b.description}>{b.icone} {b.nom}</Badge>)}
+                  {d.badges.map((b) => <Badge key={b.nom} color="green" title={b.description}><BadgeIcon name={b.icone} /> {b.nom}</Badge>)}
                 </div>
                 {d.prochain_badge && (
                   <div className="mt-5">
