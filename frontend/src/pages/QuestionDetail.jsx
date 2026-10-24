@@ -58,6 +58,7 @@ export default function QuestionDetail() {
               <p className="mt-1 text-sm text-slate-500">
                 {q.auteur_id ? <Link to={`/users/${q.auteur_id}`} className="hover:text-brand-600">{q.auteur_nom}</Link> : q.auteur_nom} · {fmtDateTime(q.date_creation)}
               </p>
+              <hr className='mt-1' />
               <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed">{q.contenu}</p>
               {(isAuthor || isModerator) && (
                 <div className="mt-4 flex justify-end">

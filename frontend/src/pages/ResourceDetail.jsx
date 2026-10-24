@@ -109,6 +109,7 @@ export default function ResourceDetail() {
                 {r.statut === 'rejetee' && r.motif_rejet && (
                   <p className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">Motif du rejet : {r.motif_rejet}</p>
                 )}
+                <hr className='mt-1' />
                 {r.description && <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed">{r.description}</p>}
                 {r.tags.length > 0 && (
                   <div className="mt-4 flex flex-wrap gap-2">

@@ -24,7 +24,7 @@ function FormBody({ existing }) {
       titre: existing?.titre || '',
       description: existing?.description || '',
       type: existing?.type || 'cours',
-      filiere: matiere?.filiere || user?.filiere || '',
+      filiere: matiere?.filieres?.[0] || user?.filiere || '',
       matiere: existing?.matiere || '',
       lien_externe: existing?.lien_externe || '',
       tags: existing?.tags?.join(', ') || '',
@@ -35,7 +35,7 @@ function FormBody({ existing }) {
   useEffect(() => { reset(defaults) }, [defaults, reset])
 
   const filiereId = Number(watch('filiere')) || null
-  const options = (matieres.data || []).filter((m) => !filiereId || m.filiere === filiereId)
+  const options = (matieres.data || []).filter((m) => !filiereId || m.filieres.includes(filiereId))
 
   const mutation = useMutation({
     mutationFn: (fd) => (existing ? resources.update(existing.id, fd) : resources.create(fd)),

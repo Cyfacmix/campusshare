@@ -35,7 +35,7 @@ export default function Home() {
       <section className="rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 px-6 py-14 text-center text-white">
         <h1 className="text-3xl font-extrabold sm:text-4xl">Le savoir de votre campus, partagé par les étudiants</h1>
         <p className="mx-auto mt-3 max-w-2xl text-brand-100">
-          Cours, résumés, sujets d&apos;examen corrigés et tutoriels, classés par filière, niveau et matière.
+          Cours, Résumés, Sujets d&apos;examen et Tutoriels.
         </p>
         <form className="mx-auto mt-8 flex max-w-xl gap-2"
           onSubmit={(e) => { e.preventDefault(); navigate(`/resources?search=${encodeURIComponent(search)}`) }}>
@@ -58,7 +58,7 @@ export default function Home() {
         params={{ ordering: '-score', page_size: 6 }} link="/resources?ordering=-score" />
 
       <section>
-        <h2 className="mb-4 flex items-center gap-2 text-xl font-bold"><Trophy className="h-5 w-5 text-amber-500" /> Meilleurs contributeurs</h2>
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-bold"> Meilleurs contributeurs</h2>
         <QueryState query={leaders}>
           {(data) => (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">

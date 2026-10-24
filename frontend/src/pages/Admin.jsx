@@ -124,20 +124,36 @@ function Filieres() {
     </div>
   )
 }
+function FiliereChecks({ options = [], value = [], onChange, className }) {
+  const toggle = (id) => onChange(value.includes(id) ? value.filter((x) => x !== id) : [...value, id])
+  return (
+    <fieldset className={className}>
+      <legend className="mb-1 text-sm font-medium">Filières</legend>
+      <div className="flex flex-wrap gap-x-5 gap-y-2">
+        {options.map((f) => (
+          <label key={f.id} className="flex cursor-pointer items-center gap-2 text-sm">
+            <input type="checkbox" checked={value.includes(f.id)} onChange={() => toggle(f.id)} />
+            {f.nom}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  )
+}
 
 function Matieres() {
   const qc = useQueryClient()
   const toast = useToast()
   const filieres = useQuery({ queryKey: ['filieres'], queryFn: catalog.filieres })
   const query = useQuery({ queryKey: ['matieres-all'], queryFn: () => catalog.matieres() })
-  const empty = { code: '', nom: '', niveau: 'L1', semestre: 1, filiere: '' }
+  const empty = { code: '', nom: '', niveau: 'L1', semestre: 1, filieres: [] }
   const [form, setForm] = useState(empty)
   const [deleting, setDeleting] = useState(null)
   const [editing, setEditing] = useState(null)
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
   const done = (msg) => { qc.invalidateQueries({ queryKey: ['matieres-all'] }); qc.invalidateQueries({ queryKey: ['matieres'] }); toast.success(msg) }
   const create = useMutation({
-    mutationFn: () => catalog.createMatiere({ ...form, semestre: Number(form.semestre), filiere: Number(form.filiere) }),
+    mutationFn: () => catalog.createMatiere({ ...form, semestre: Number(form.semestre) }),
     onSuccess: () => { setForm(empty); done('Matière créée.') },
     onError: (e) => toast.error(errorMessage(e)),
   })
@@ -147,7 +163,7 @@ function Matieres() {
       nom: editing.nom,
       niveau: editing.niveau,
       semestre: Number(editing.semestre),
-      filiere: Number(editing.filiere), 
+      filieres: editing.filieres,
     }),
     onSuccess: () => { setEditing(null); done('Matière modifiée.') },
     onError: (e) => toast.error(errorMessage(e)),
@@ -157,7 +173,7 @@ function Matieres() {
     onSuccess: () => { setDeleting(null); done('Matière supprimée.') },
     onError: (e) => { setDeleting(null); toast.error(errorMessage(e)) },
   })
-  const valid = form.code.trim() && form.nom.trim() && form.filiere
+  const valid = form.code.trim() && form.nom.trim() && form.filieres.length > 0
   return (
     <div className="space-y-4">
       <Card>
@@ -166,9 +182,9 @@ function Matieres() {
           <Input className="sm:col-span-2" label="Nom" value={form.nom} onChange={set('nom')} />
           <Select label="Niveau" value={form.niveau} onChange={set('niveau')}>{NIVEAUX.map((n) => <option key={n}>{n}</option>)}</Select>
           <Select label="Semestre" value={form.semestre} onChange={set('semestre')}>{[1, 2].map((n) => <option key={n}>{n}</option>)}</Select>
-          <Select label="Filière" value={form.filiere} onChange={set('filiere')}>
-            <option value="">-- Choisir --</option>{filieres.data?.map((f) => <option key={f.id} value={f.id}>{f.nom}</option>)}
-          </Select>
+          <FiliereChecks className="sm:col-span-2" options={filieres.data}
+            value={editing?.filieres || []}
+            onChange={(v) => setEditing((x) => ({ ...x, filieres: v }))} />
         </div>
         <div className="mt-3 flex justify-end"><Button disabled={!valid} loading={create.isPending} onClick={() => create.mutate()}>Ajouter la matière</Button></div>
       </Card>
@@ -198,7 +214,7 @@ function Matieres() {
         )}
       </QueryState>
       <Modal open={Boolean(editing)} onClose={() => setEditing(null)} title="Modifier la matière"
-        footer={(<><Button variant="secondary" onClick={() => setEditing(null)}>Annuler</Button><Button loading={update.isPending} onClick={() => update.mutate()}>Enregistrer</Button></>)}>
+        footer={(<><Button variant="secondary" onClick={() => setEditing(null)}>Annuler</Button><Button loading={update.isPending} onClick={() => update.mutate()} disabled={!editing?.filieres?.length}>Enregistrer</Button></>)}>
         <div className="grid gap-3 sm:grid-cols-2">
           <Input label="Code" value={editing?.code || ''} disabled className="opacity-60" />
           <Input label="Nom" value={editing?.nom || ''} onChange={(e) => setEditing((x) => ({ ...x, nom: e.target.value }))} />
@@ -208,9 +224,9 @@ function Matieres() {
           <Select label="Semestre" value={editing?.semestre || 1} onChange={(e) => setEditing((x) => ({ ...x, semestre: e.target.value }))}>
             {[1, 2].map((n) => <option key={n}>{n}</option>)}
           </Select>
-          <Select label="Filière" value={editing?.filiere || ''} onChange={(e) => setEditing((x) => ({ ...x, filiere: e.target.value }))}>
-            {filieres.data?.map((f) => <option key={f.id} value={f.id}>{f.nom}</option>)}
-          </Select>
+          <FiliereChecks className="sm:col-span-2" options={filieres.data}
+            value={editing?.filieres || []}
+            onChange={(v) => setEditing((x) => ({ ...x, filieres: v }))} />
         </div>
       </Modal>
       <ConfirmDialog open={Boolean(deleting)} onClose={() => setDeleting(null)} loading={remove.isPending}
@@ -231,8 +247,13 @@ function UsersAdmin() {
   const [deleting, setDeleting] = useState(null)
   const query = useQuery({ queryKey: ['admin-users', page, search, role], queryFn: () => adminUsers.list({ page, search, role }), placeholderData: (p) => p })
   const update = useMutation({
-    mutationFn: ({ id, data }) => adminUsers.update(id, data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-users'] }); toast.success('Utilisateur mis à jour.') },
+    mutationFn: () => catalog.updateMatiere(editing.id, {
+      nom: editing.nom,
+      niveau: editing.niveau,
+      semestre: Number(editing.semestre),
+      filieres: editing.filieres,
+    }),
+    onSuccess: () => { setEditing(null); done('Matière modifiée.') },
     onError: (e) => toast.error(errorMessage(e)),
   })
   const rename = useMutation({
