@@ -10,7 +10,9 @@ from apps.interactions.models import Vote
 from apps.moderation.models import Signalement
 from apps.qna.models import Question, Reponse
 from apps.resources.models import Ressource
-from common.permissions import IsModerator
+
+from django.utils.dateparse import parse_datetime
+from common.permissions import IsModerator, is_role
 
 User = get_user_model()
 
@@ -107,3 +109,39 @@ class AdminDashboardView(APIView):
                 User.objects.values("role").annotate(total=Count("id")).order_by("-total")
             ),
         })
+
+class NavCountsView(APIView):
+    """Compteurs de nouveautes affiches sur les liens du menu."""
+
+    permission_classes = [IsAuthenticated]
+
+    def _since(self, name):
+        raw = self.request.query_params.get(name)
+        return parse_datetime(raw) if raw else None
+
+    def get(self, request):
+        user = request.user
+        data = {"ressources": 0, "questions": 0, "moderation": 0}
+
+        since = self._since("ressources_since")
+        if since:
+            data["ressources"] = (
+                Ressource.objects.filter(
+                    statut=Ressource.Statut.PUBLIEE, date_modification__gt=since
+                )
+                .exclude(auteur=user)
+                .count()
+            )
+
+        since = self._since("questions_since")
+        if since:
+            data["questions"] = (
+                Question.objects.filter(date_creation__gt=since).exclude(user=user).count()
+            )
+
+        if is_role(user, "moderateur", "admin"):
+            data["moderation"] = (
+                Ressource.objects.filter(statut=Ressource.Statut.EN_ATTENTE).count()
+                + Signalement.objects.filter(statut=Signalement.Statut.OUVERT).count()
+            )
+        return Response(data)

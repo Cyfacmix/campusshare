@@ -7,31 +7,44 @@ import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../hooks/useTheme'
 import { Avatar, Button } from './ui'
 import { fullName } from '../utils/format'
+import { useNavCounts } from '../hooks/useNavCounts'
 
 const linkCls = ({ isActive }) =>
   `rounded-md px-3 py-2 text-sm font-medium transition ${isActive
     ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200'
     : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'}`
 
+function CountBadge({ n }) {
+  if (!n) return null
+  return (
+    <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white">
+      {n > 99 ? '99+' : n}
+      <span className="sr-only"> nouveau(x)</span>
+    </span>
+  )
+}
+
 export default function Layout() {
   const { user, isAuthenticated, isModerator, hasRole, logout } = useAuth()
   const { dark, toggle } = useTheme()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
+  const counts = useNavCounts()
 
   const unread = useQuery({
     queryKey: ['unread-count'],
     queryFn: gamification.unreadCount,
     enabled: isAuthenticated,
-    refetchInterval: 30000,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: true,
   })
 
   const links = (
     <>
-      <NavLink to="/resources" className={linkCls} onClick={() => setOpen(false)}>Ressources</NavLink>
-      <NavLink to="/questions" className={linkCls} onClick={() => setOpen(false)}>Questions</NavLink>
+      <NavLink to="/resources" className={linkCls} onClick={() => setOpen(false)}>Ressources<CountBadge n={counts.ressources} /></NavLink>
+      <NavLink to="/questions" className={linkCls} onClick={() => setOpen(false)}>Questions<CountBadge n={counts.questions} /></NavLink>
       {isAuthenticated && <NavLink to="/me/dashboard" className={linkCls} onClick={() => setOpen(false)}>Mon espace</NavLink>}
-      {isModerator && <NavLink to="/moderation" className={linkCls} onClick={() => setOpen(false)}>Modération</NavLink>}
+      {isModerator && <NavLink to="/moderation" className={linkCls} onClick={() => setOpen(false)}>Modération<CountBadge n={counts.moderation} /></NavLink>}
       {hasRole('admin') && <NavLink to="/admin" className={linkCls} onClick={() => setOpen(false)}>Administration</NavLink>}
     </>
   )

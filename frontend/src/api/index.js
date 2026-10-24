@@ -89,3 +89,7 @@ export const adminUsers = {
   update: (id, d) => patch(`/admin/users/${id}/`, d),
   remove: (id) => del(`/admin/users/${id}/`),
 }
+
+export const nav = {
+  counts: (params) => get('/nav/counts/', params),
+}

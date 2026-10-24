@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useState } from 'react'
-import { CheckCircle2, XCircle, X } from 'lucide-react'
+import { CheckCircle2, Info, XCircle, X } from 'lucide-react'
 
 const ToastContext = createContext(null)
 
@@ -17,6 +17,7 @@ export function ToastProvider({ children }) {
   const api = {
     success: (m) => push(m, 'success'),
     error: (m) => push(m, 'error'),
+    info: (m) => push(m, 'info'),
   }
 
   return (
@@ -28,7 +29,9 @@ export function ToastProvider({ children }) {
             className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-700 dark:bg-slate-800">
             {t.type === 'success'
               ? <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
-              : <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />}
+              : t.type === 'info'
+                ? <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" />
+                : <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />}
             <p className="flex-1 text-sm">{t.message}</p>
             <button onClick={() => remove(t.id)} aria-label="Fermer" className="text-slate-400 hover:text-slate-600">
               <X className="h-4 w-4" />

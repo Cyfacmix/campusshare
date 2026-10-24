@@ -43,11 +43,11 @@ export default function Register() {
             {...register('email', { required: "L'email est obligatoire.", pattern: { value: /^\S+@\S+\.\S+$/, message: 'Email invalide.' } })} />
           <div className="grid gap-4 sm:grid-cols-2">
             <Select label="Filière" {...register('filiere')}>
-              <option value="">— Choisir —</option>
+              <option value="">-- Choisir --</option>
               {filieres.data?.map((f) => <option key={f.id} value={f.id}>{f.nom}</option>)}
             </Select>
             <Select label="Niveau" {...register('niveau')}>
-              <option value="">— Choisir —</option>
+              <option value="">-- Choisir --</option>
               {NIVEAUX.map((n) => <option key={n}>{n}</option>)}
             </Select>
           </div>
