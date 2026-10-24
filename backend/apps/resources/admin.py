@@ -8,5 +8,5 @@ admin.site.register(Tag)
 @admin.register(Ressource)
 class RessourceAdmin(admin.ModelAdmin):
     list_display = ("titre", "type", "statut", "matiere", "auteur", "date_creation")
-    list_filter = ("statut", "type", "matiere__filiere")
+    list_filter = ("statut", "type", "matiere__filieres")
     search_fields = ("titre", "description")

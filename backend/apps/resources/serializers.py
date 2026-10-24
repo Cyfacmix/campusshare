@@ -15,7 +15,7 @@ class TagSerializer(serializers.ModelSerializer):
 class RessourceListSerializer(serializers.ModelSerializer):
     matiere_nom = serializers.CharField(source="matiere.nom", read_only=True)
     matiere_code = serializers.CharField(source="matiere.code", read_only=True)
-    filiere_nom = serializers.CharField(source="matiere.filiere.nom", read_only=True)
+    filiere_nom = serializers.SerializerMethodField()
     niveau = serializers.CharField(source="matiere.niveau", read_only=True)
     auteur_nom = serializers.SerializerMethodField()
     tags = serializers.SlugRelatedField(many=True, slug_field="nom", read_only=True)
@@ -35,6 +35,9 @@ class RessourceListSerializer(serializers.ModelSerializer):
 
     def get_auteur_nom(self, obj):
         return display_name(obj.auteur)
+    
+    def get_filiere_nom(self, obj):
+        return ", ".join(f.nom for f in obj.matiere.filieres.all())
 
     def get_certifiee(self, obj):
         return obj.certificateur_id is not None

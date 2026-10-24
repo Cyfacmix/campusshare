@@ -127,7 +127,7 @@ class RessourceViewSet(viewsets.ModelViewSet):
         fav_tags = Favori.objects.filter(user=user).values_list("ressource__tags", flat=True)
         cond = Q(matiere_id__in=list(matieres)) | Q(tags__in=[t for t in fav_tags if t])
         if user.filiere_id:
-            cond |= Q(matiere__filiere_id=user.filiere_id)
+            cond |= Q(matiere__filieres=user.filiere_id)
         voted = Vote.objects.filter(user=user).values_list("ressource_id", flat=True)
         qs = (
             self.get_queryset()

@@ -110,7 +110,7 @@ class SuivisListView(generics.ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        return Matiere.objects.filter(suivis__user=self.request.user).select_related("filiere")
+        return Matiere.objects.filter(suivis__user=self.request.user).prefetch_related("filieres")
 
 
 class CommentaireListCreateView(APIView):

@@ -15,8 +15,8 @@ def ressources_qs(user):
         .values("s")
     )
     qs = (
-        Ressource.objects.select_related("matiere__filiere", "auteur", "certificateur")
-        .prefetch_related("tags")
+        Ressource.objects.select_related("matiere", "auteur", "certificateur")
+        .prefetch_related("tags", "matiere__filieres")
         .annotate(score=Coalesce(Subquery(score, output_field=IntegerField()), 0,
                                  output_field=IntegerField()))
     )

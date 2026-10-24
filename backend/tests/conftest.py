@@ -29,8 +29,9 @@ def filiere(db):
 
 @pytest.fixture
 def matiere(filiere):
-    return Matiere.objects.create(code="INF1", nom="Algorithmique", niveau="L1", filiere=filiere)
-
+    m = Matiere.objects.create(code="INF1", nom="Algorithmique", niveau="L1")
+    m.filieres.add(filiere)
+    return m
 
 @pytest.fixture
 def student(db):

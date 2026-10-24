@@ -17,17 +17,10 @@ class Matiere(models.Model):
     nom = models.CharField(max_length=150)
     niveau = models.CharField(max_length=20)
     semestre = models.PositiveSmallIntegerField(default=1)
-    filiere = models.ForeignKey(
-        Filiere, on_delete=models.PROTECT, related_name="matieres"
-    )
+    filieres = models.ManyToManyField(Filiere, related_name="matieres")
 
     class Meta:
-        ordering = ["filiere__nom", "niveau", "nom"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["code", "filiere"], name="uniq_matiere_code_filiere"
-            )
-        ]
+        ordering = ["niveau", "nom"]
 
     def __str__(self):
         return f"{self.code} - {self.nom}"

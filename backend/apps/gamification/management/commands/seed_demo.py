@@ -122,8 +122,9 @@ class Command(BaseCommand):
                 for i, nom in enumerate(noms, 1):
                     code = f"{fnom[:3].upper()}{niveau[1]}{i}"
                     m, _ = Matiere.objects.get_or_create(
-                        code=code, filiere=fil,
+                        code=code,
                         defaults={"nom": nom, "niveau": niveau, "semestre": 1 + (i % 2)})
+                    m.filieres.add(fil)
                     matieres.append(m)
 
         def make_user(email, first, last, role, filiere=None, niveau="", **extra):
@@ -164,7 +165,7 @@ class Command(BaseCommand):
             matiere = rng.choice(matieres)
             typ = rng.choice(TYPES)
             titre = TITRES[typ].format(m=matiere.nom)
-            auteur = rng.choice([a for a in authors if a.filiere_id == matiere.filiere_id] or authors)
+            auteur = rng.choice([a for a in authors if a.filiere_id in {f.id for f in matiere.filieres.all()}] or authors)
             statut = rng.choices(["publiee", "en_attente", "rejetee"], weights=[78, 15, 7])[0]
             res = Ressource(
                 titre=titre, type=typ, matiere=matiere, auteur=auteur, statut=statut,
