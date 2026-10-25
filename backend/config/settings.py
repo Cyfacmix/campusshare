@@ -113,14 +113,37 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = "fr-fr"
-TIME_ZONE = "UTC"  # evite les tables de fuseaux MySQL
+TIME_ZONE = "UTC" 
 USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# stockage externe S3
+S3_BUCKET = config("S3_BUCKET", default="")
+if S3_BUCKET:
+    FILE_STORAGE = {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": S3_BUCKET,
+            "endpoint_url": config("S3_ENDPOINT_URL"),
+            "access_key": config("S3_ACCESS_KEY"),
+            "secret_key": config("S3_SECRET_KEY"),
+            "region_name": config("S3_REGION", default="us-east-1"),
+            "custom_domain": config("S3_PUBLIC_DOMAIN"),
+            "addressing_style": "path",
+            "signature_version": "s3v4",
+            "querystring_auth": False,
+            "file_overwrite": False,
+            "default_acl": None,
+        },
+    }
+else:
+    FILE_STORAGE = {"BACKEND": "django.core.files.storage.FileSystemStorage"}
+
 STORAGES = {
-    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "default": FILE_STORAGE,
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
 }
 MEDIA_URL = "/media/"

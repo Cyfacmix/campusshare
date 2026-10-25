@@ -12,3 +12,5 @@ gunicorn>=22.0
 whitenoise>=6.7
 pytest>=8.0
 pytest-django>=4.8
+django-storages[s3]>=1.14
+boto3>=1.36

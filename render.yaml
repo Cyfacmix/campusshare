@@ -32,6 +32,22 @@ services:
         sync: false
       - key: DJANGO_SUPERUSER_PASSWORD
         sync: false
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ENDPOINT_URL
+        sync: false
+      - key: S3_ACCESS_KEY
+        sync: false
+      - key: S3_SECRET_KEY
+        sync: false
+      - key: S3_REGION
+        sync: false
+      - key: S3_PUBLIC_DOMAIN
+        sync: false
+      - key: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - key: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
 
   - type: web
     name: campusshare-web
